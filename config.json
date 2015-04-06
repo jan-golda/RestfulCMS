@@ -1,0 +1,10 @@
+{
+  "secret": "jakiestambardzotajnehasloktorezrozumiejatylkopolacy",
+  "database": {
+    "url": "localhost",
+    "db": "RestfulCMS",
+    "user": false,
+    "password": false
+  },
+  "port": 80
+}
