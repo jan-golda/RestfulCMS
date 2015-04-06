@@ -19,3 +19,6 @@ User.methods.validPassword = function validPassword(password){
 User.statics.getHash = function getHash(text){
 	return bcrypt.hashSync(text);
 };
+
+// exports
+module.exports = database.model('User', User);
