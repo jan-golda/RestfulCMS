@@ -17,7 +17,8 @@ var User	= require('./models/User');
 var server = express();
 
 // parsing data
-server.use(bodyParser);
+server.use(bodyParser.json());
+server.use(bodyParser.urlencoded({extended: true}));
 
 // handling authentication
 server.post('/authentication', function(req,res,next){
@@ -30,7 +31,7 @@ server.post('/authentication', function(req,res,next){
 			return res.end("Wrong password", 401);
 
 		// calculate expired time
-		var expires = moment().add('days', 1).valueOf();
+		var expires = moment().add(1, 'days').valueOf();
 
 		// create token
 		var token = jwt.encode({
