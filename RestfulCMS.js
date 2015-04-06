@@ -7,6 +7,7 @@ var bodyParser	= require('body-parser');
 var jwt		= require('jwt-simple');
 var moment	= require('moment');
 var requireAll	= require('require-all');
+var morgan	= require('morgan');
 
 // import private modules
 var config	= require('./config');
@@ -20,15 +21,18 @@ var server = express();
 server.use(bodyParser.json());
 server.use(bodyParser.urlencoded({extended: true}));
 
+// logging
+server.use(morgan('dev'));
+
 // handling authentication
 server.post('/authentication', function(req,res,next){
 	User.findOne({username: req.body.username}, function(err, user){
 		if(err)
 			return next(err);
 		if(!user)
-			return res.end("Wrong username", 401);
+			return res.status(401).send("Wrong username");
 		if(!user.validPassword(req.body.password))
-			return res.end("Wrong password", 401);
+			return res.status(401).send("Wrong password");
 
 		// calculate expired time
 		var expires = moment().add(1, 'days').valueOf();
@@ -53,7 +57,7 @@ server.all('*', function(req, res, next){
 	var token = (req.body && req.body.access_token) || (req.query && req.query.access_token) || req.headers['x-access-token'];
 
 	if(!token)
-		return res.end("Missing token", 400);
+		return res.status(400).send("Missing token");
 
 	try{
 		// decoding token
@@ -61,12 +65,15 @@ server.all('*', function(req, res, next){
 
 		// checking token expired time
 		if(decoded.exp < moment().valueOf())
-			return res.end("Token expired", 403);
+			return res.status(403).send("Token expired");
 
 		// retriving user
 		User.findById(decoded.iss, function(err, user){
 			if(err)
 				return next(err);
+
+			if(!user)
+				return res.status(403).send("Non existing user");
 
 			// assign user to request
 			req.user = user;
@@ -76,7 +83,7 @@ server.all('*', function(req, res, next){
 		});
 
 	} catch(err){
-		return res.end("Wrong token", 403);
+		return res.status(403).send("Wrong token");
 	}
 });
 
