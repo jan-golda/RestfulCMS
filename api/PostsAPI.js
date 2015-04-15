@@ -32,8 +32,18 @@ function create(req, res){
 	res.sendStatus(404).end();
 }
 function get(req, res){
-	// TODO: add handling
-	res.sendStatus(404).end();
+	// getting post by id
+	Post.findOne()
+		.where('id').eq(req.params.id)
+		.exec(function(err, post){
+			if(err)
+				throw err;
+			if(!post)
+				return res.status(404).end();
+			
+			// send response
+			res.json(post).status(200).end();
+		});
 }
 function edit(req, res){
 	// TODO: add handling
