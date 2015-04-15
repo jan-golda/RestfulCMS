@@ -6,8 +6,7 @@ var Post = database.Schema({
 	id:		{type: String, trim: true, lowercase: true},
 	title:		{type: String},
 	content:	{type: String},
-	author:		{type: String, ref: 'User'},
-	createdAt:	{type: Date, default: Date.now}
+	author:		{type: String, ref: 'User'}
 });
 
 // plugins
