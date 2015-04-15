@@ -50,6 +50,16 @@ function edit(req, res){
 	res.sendStatus(404).end();
 }
 function remove(req, res){
-	// TODO: add handling
-	res.sendStatus(404).end();
+	// removing post by id
+	Post.remove()
+		.where('id').eq(req.params.id)
+		.exec(function(err, count){
+			if(err)
+				throw err;
+			if(!count)
+				return res.status(404).end();
+			
+			// sending response
+			res.status(200).end();
+		});
 }
